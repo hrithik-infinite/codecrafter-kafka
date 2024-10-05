@@ -10,10 +10,17 @@ const server = net.createServer((connection) => {
   //   const response = Buffer.from([0, 0, 0, 0, 0, 0, 0, coorelationID]);
   //   connection.write(response);
   connection.on("data", function (data) {
+    const apiVersions = [0, 1, 2, 3, 4];
     const request_api_key = data.subarray(0, 2);
     const request_api_version = data.subarray(2, 4);
     const correlation_id = data.subarray(4, 12);
-    connection.write(correlation_id);
+    // connection.write(correlation_id);
+    if (apiVersions.includes(request_api_version)) {
+      connection.write(correlation_id);
+    } else {
+      connection.write(correlation_id);
+      connection.write(new Uint8Array([0, 35]));
+    }
   });
 });
 
